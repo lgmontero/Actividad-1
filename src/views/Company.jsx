@@ -1,7 +1,6 @@
 import React from "react";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import {
   Table,
   Button,
@@ -17,31 +16,31 @@ import {
 const data = [
   {
     id: 1,
-    name: "Pedro Carrizo",
-    funcion: "Empleado",
     empresa: "Develop SA",
     city: "La Rioja",
     country: "Argentina",
   },
   {
     id: 2,
-    name: "Gonzalo Gonzalez",
-    funcion: "Empleado",
-    empresa: "Sancor SA",
-    city: "Cordoba",
-    country: "Argentina",
+    empresa: "Chilevisión",
+    city: "Santiago",
+    country: "Chile",
+  },
+  {
+    id: 2,
+    empresa: "Petrobras",
+    city: "Natal",
+    country: "Brasil",
   },
 ];
 
-export class Form extends React.Component {
+export class Company extends React.Component {
   state = {
     data: data,
     modalActualizar: false,
     modalInsertar: false,
     form: {
       id: "",
-      name: "",
-      funcion: "",
       empresa: "",
       city: "",
       country: "",
@@ -60,8 +59,7 @@ export class Form extends React.Component {
     this.setState({
       form: {
         id: "",
-        name: "",
-        funcion: "",
+        
         empresa: "",
         city: "",
         country: "",
@@ -85,20 +83,6 @@ export class Form extends React.Component {
     let error = {};
     var contador = 0;
 
-    if (this.state.form.name.trim() === "") {
-      valida = false;
-      error.name = window.confirm(
-        "Por Favor, Ingresar un valor en campo Nombre y Apellido"
-      );
-      return;
-    }
-    if (this.state.form.funcion.trim() === "") {
-      valida = false;
-      error.funcion = window.confirm(
-        "Por Favor, Ingresar un valor en campo Funcion"
-      );
-      return;
-    }
     if (this.state.form.empresa.trim() === "") {
       valida = false;
       error.empresa = window.confirm(
@@ -128,8 +112,6 @@ export class Form extends React.Component {
       var arreglo = this.state.data;
       arreglo.forEach((registro) => {
         if (dato.id === registro.id) {
-          arreglo[contador].name = dato.name;
-          arreglo[contador].funcion = dato.funcion;
           arreglo[contador].empresa = dato.empresa;
           arreglo[contador].city = dato.city;
           arreglo[contador].country = dato.country;
@@ -137,7 +119,7 @@ export class Form extends React.Component {
         contador++;
       });
       this.setState({ data: arreglo, modalActualizar: false,
-        form: { id: "", name: "", funcion: "", empresa: "",  city: "", country: "", },
+        form: { id: "", empresa: "",  city: "", country: "", },
       });
     }
   };
@@ -166,24 +148,7 @@ export class Form extends React.Component {
     let error = {};
     var valida = true;
 
-    if (this.state.form.name.trim() === "") {
-      valida = false;
-      error.name = window.confirm(
-        "Por Favor, Ingresar un valor en campo Nombre y Apellido"
-      );
-      {
-        return;
-      }
-    }
-    if (this.state.form.funcion.trim() === "") {
-      valida = false;
-      error.funcion = window.confirm(
-        "Por Favor, Ingrese la descripsion que se desepeña en el campo Función"
-      );
-      {
-        return;
-      }
-    }
+    
     if (this.state.form.empresa.trim() === "") {
       valida = false;
       error.funcion = window.confirm(
@@ -223,8 +188,6 @@ export class Form extends React.Component {
         data: lista,
         form: {
           id: "",
-          name: "",
-          funcion: "",
           empresa: "",
           city: "",
           country: "",
@@ -246,23 +209,21 @@ export class Form extends React.Component {
           
           <br />
           <thead>
-            <h1>Formulario Registro de Usuarios</h1>
+            <h1>Registro de Empresas</h1>
           </thead>
           <br />
           <Table>
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nombres y Apellidos</th>
-                <th>Funcion | Puesto</th>
                 <th>Empresa</th>
                 <th>Ciudad</th>
                 <th>Pais</th>
                 <th>Acción</th>
                
-                {" "}
                 <th>
-                    <Button
+                {" "}
+                  <Button
                       color="btn btn-success btn-sm"
                       onClick={() => this.mostrarModalInsertar()}
                     >
@@ -276,8 +237,6 @@ export class Form extends React.Component {
               {this.state.data.map((dato) => (
                 <tr key={dato.id}>
                   <td>{dato.id}</td>
-                  <td>{dato.name}</td>
-                  <td>{dato.funcion}</td>
                   <td>{dato.empresa}</td>
                   <td>{dato.city}</td>
                   <td>{dato.country}</td>
@@ -323,29 +282,7 @@ export class Form extends React.Component {
                 value={this.state.form.id}
               />
             </FormGroup> */}
-            <FormGroup >
-              <label class="a" >Nombres y Apellidos:</label>
-              
-              <input
-                className="form-control"
-                name="name"
-                type="text"
-                onChange={this.handleChange}
-                value={this.state.form.name}
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <label class="a">Funcion | Puesto:</label>
-              <input
-                className="form-control"
-                name="funcion"
-                type="text"
-                onChange={this.handleChange}
-                value={this.state.form.funcion}
-              />
-            </FormGroup>
-            
+                       
             <FormGroup>
               <label class="a">Empresa:</label>
               <input
@@ -416,31 +353,7 @@ export class Form extends React.Component {
                 value={this.state.data.length+1}
               />
             </FormGroup> */}
-            <FormGroup>
-              <label class="a">Nombres y Apellidos:</label>
-              <input
-                className="form-control"
-                name="name"
-                required
-                placeholder="Ingresar Nombre y Apellido"
-                type="text"
-                onChange={this.handleChange}
-                aria-describedby="nameHelp"
-                id="name"
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label class="a">Funcion | Puesto:</label>
-              <input
-                className="form-control"
-                name="funcion"
-                required
-                placeholder="Ingresar el puesto en el que se desempeña"
-                type="text"
-                onChange={this.handleChange}
-              ></input>
-            </FormGroup>
+            
 
             <FormGroup>
               <label class="a">Empresa:</label>
