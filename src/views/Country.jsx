@@ -1,19 +1,17 @@
 import React from "react";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  Table,
-  Button,
-  Container,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  FormGroup,
-  ModalFooter,
-  FormFeedback,
-} from "reactstrap";
 
-const data = [
+import {  Table,  Button,  Container,  Modal,  ModalHeader,  ModalBody,  FormGroup,  ModalFooter,} from "reactstrap";
+
+
+
+// (()=>{
+
+//     localStorage.clear();
+
+// })();
+const datac = [
   {
     id: 1,
     country: "Argentina",
@@ -26,11 +24,15 @@ const data = [
     id: 3,
     country: "Brasil",
   },
+  
 ];
 
 export class Country extends React.Component {
-  state = {
-    data: data,
+  constructor(props){
+  super(props) 
+  this.props=props
+  this.state = {
+    datac: datac,
     modalActualizar: false,
     modalInsertar: false,
     form: {
@@ -39,6 +41,14 @@ export class Country extends React.Component {
     },
     error: {},
   };
+  }
+  componentDidMount() {
+    if (localStorage.getItem("datac") != null) {
+      this.setState({
+        datac: JSON.parse(localStorage.getItem("datac")),
+      });
+    }
+}
 
   mostrarModalActualizar = (dato) => {
     this.setState({
@@ -67,6 +77,9 @@ export class Country extends React.Component {
     this.setState({ modalInsertar: false });
   };
 
+
+  
+
   editar = (dato) => {
     var valida = true;
     let error = {};
@@ -84,14 +97,14 @@ export class Country extends React.Component {
     });
     if (valida === true) {
       window.confirm("Se Modifico con Exito el Registro");
-      var arreglo = this.state.data;
+      var arreglo = this.state.datac;
       arreglo.forEach((registro) => {
         if (dato.id === registro.id) {
           arreglo[contador].country = dato.country;
         }
         contador++;
       });
-      this.setState({ data: arreglo, modalActualizar: false,
+      this.setState({ datac: arreglo, modalActualizar: false,
         form: { id: "", country: "", },
       });
     }
@@ -103,32 +116,35 @@ export class Country extends React.Component {
     );
     if (opcion === true) {
       var contador = 0;
-      var arreglo = this.state.data;
+      var arreglo = this.state.datac;
       arreglo.forEach((registro) => {
         if (dato.id === registro.id) {
           arreglo.splice(contador, 1);
         }
         contador++;
       });
-      this.setState({ data: arreglo, modalActualizar: false });
+      this.setState({ datac: arreglo, modalActualizar: false });
     }
   };
 
   insertar = (e) => {
     var valorNuevo = { ...this.state.form };
-    valorNuevo.id = this.state.data.length + 1;
-    var lista = this.state.data;
+    valorNuevo.id = this.state.datac.length + 1;
+    var lista = this.state.datac;
     let error = {};
     var valida = true;
+    
+    
+       
 
     if (this.state.form.country.trim() === "") {
       valida = false;
       error.country = window.confirm(
         "Por Favor, ingresar un valor en campo Pais"
       );
-      {
+      
         return;
-      }
+      
     }
     this.setState({
       error: error,
@@ -137,9 +153,12 @@ export class Country extends React.Component {
     if (valida === true) {
       window.confirm("El registro se Guardo con Exito!!");
       lista.push(valorNuevo);
-      this.setState({
+      localStorage.setItem('datac', JSON.stringify(this.state.datac));
+     
+     
+        this.setState({
         modalInsertar: false,
-        data: lista,
+        datac: lista,
         form: {
           id: "",
           country: "",
@@ -154,8 +173,11 @@ export class Country extends React.Component {
     });
   };
 
+
+ 
+
   render() {
-    return (
+      return (
       <>
         <Container>
           
@@ -171,7 +193,7 @@ export class Country extends React.Component {
                 <th>Pais</th>
                 <th>Acción</th>
                
-                {" "}
+                {' '}
                 <th>
                     <Button
                       color="btn btn-success btn-sm"
@@ -184,19 +206,19 @@ export class Country extends React.Component {
             </thead>
 
             <tbody>
-              {this.state.data.map((dato) => (
+              {this.state.datac.map((dato) => (
                 <tr key={dato.id}>
                   <td>{dato.id}</td>
                   <td>{dato.country}</td>
 
                   <td>
-                   {" "}
+                   {' '}
                     <Button
                       color="btn btn-primary btn-sm"
                       onClick={() => this.mostrarModalActualizar(dato)}
                     >
                       Editar
-                    </Button>{" "}
+                    </Button>{' '}
                     <Button
                       color="btn btn-danger btn-sm"
                       onClick={() => this.eliminar(dato)}
@@ -219,7 +241,7 @@ export class Country extends React.Component {
 
           <ModalBody>
             {/* <FormGroup >
-              <label class="a">
+              <label className="a">
                Id:
               </label>
             
@@ -233,7 +255,7 @@ export class Country extends React.Component {
                        
                        
             <FormGroup>
-              <label class="a">Pais:</label>
+              <label className="a">Pais:</label>
               <input
                 className="form-control"
                 name="country"
@@ -269,7 +291,7 @@ export class Country extends React.Component {
 
           <ModalBody>
             {/* <FormGroup>
-              <label class="a">
+              <label className="a">
                 Id: 
               </label>
               
@@ -277,13 +299,13 @@ export class Country extends React.Component {
                 className="form-control"
                 readOnly
                 type="text"
-                value={this.state.data.length+1}
+                value={this.state.datac.length+1}
               />
             </FormGroup> */}
               
            
             <FormGroup>
-              <label class="a">Pais:</label>
+              <label className="a">Pais:</label>
               <input
                 className="form-control"
                 name="country"

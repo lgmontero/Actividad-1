@@ -11,7 +11,7 @@ import {
   ModalBody,
   FormGroup,
   ModalFooter,
-  FormFeedback,
+  
 } from "reactstrap";
 
 const data = [
@@ -171,45 +171,45 @@ export class Form extends React.Component {
       error.name = window.confirm(
         "Por Favor, Ingresar un valor en campo Nombre y Apellido"
       );
-      {
+      
         return;
-      }
+      
     }
     if (this.state.form.funcion.trim() === "") {
       valida = false;
       error.funcion = window.confirm(
         "Por Favor, Ingrese la descripsion que se desepeña en el campo Función"
       );
-      {
+      
         return;
-      }
+      
     }
     if (this.state.form.empresa.trim() === "") {
       valida = false;
       error.funcion = window.confirm(
         "Por Favor, Ingrese en nombre de su Empresa"
       );
-      {
+      
         return;
-      }
+      
     }
     if (this.state.form.city.trim() === "") {
       valida = false;
       error.city = window.confirm(
         "Por Favor, ingresar un valor en campo Ciudad"
       );
-      {
+      
         return;
-      }
+      
     }
     if (this.state.form.country.trim() === "") {
       valida = false;
       error.country = window.confirm(
         "Por Favor, ingresar un valor en campo Pais"
       );
-      {
+      
         return;
-      }
+      
     }
     this.setState({
       error: error,
@@ -251,6 +251,7 @@ export class Form extends React.Component {
           <br />
           <Table>
             <thead>
+
               <tr>
                 <th>ID</th>
                 <th>Nombres y Apellidos</th>
@@ -260,7 +261,7 @@ export class Form extends React.Component {
                 <th>Pais</th>
                 <th>Acción</th>
                
-                {" "}
+                {''}
                 <th>
                     <Button
                       color="btn btn-success btn-sm"
@@ -273,7 +274,7 @@ export class Form extends React.Component {
             </thead>
 
             <tbody>
-              {this.state.data.map((dato) => (
+              {this.state.data.map((dato, idx) => (
                 <tr key={dato.id}>
                   <td>{dato.id}</td>
                   <td>{dato.name}</td>
@@ -283,13 +284,13 @@ export class Form extends React.Component {
                   <td>{dato.country}</td>
 
                   <td>
-                   {" "}
+                   {' '}
                     <Button
                       color="btn btn-primary btn-sm"
                       onClick={() => this.mostrarModalActualizar(dato)}
                     >
                       Editar
-                    </Button>{" "}
+                    </Button>{' '}
                     <Button
                       color="btn btn-danger btn-sm"
                       onClick={() => this.eliminar(dato)}
@@ -312,7 +313,7 @@ export class Form extends React.Component {
 
           <ModalBody>
             {/* <FormGroup >
-              <label class="a">
+              <label className="a">
                Id:
               </label>
             
@@ -324,11 +325,12 @@ export class Form extends React.Component {
               />
             </FormGroup> */}
             <FormGroup >
-              <label class="a" >Nombres y Apellidos:</label>
+              <label className="a"  >Nombres y Apellidos:</label>
               
               <input
                 className="form-control"
                 name="name"
+                id="name"
                 type="text"
                 onChange={this.handleChange}
                 value={this.state.form.name}
@@ -336,7 +338,7 @@ export class Form extends React.Component {
             </FormGroup>
             
             <FormGroup>
-              <label class="a">Funcion | Puesto:</label>
+              <label className="a">Funcion | Puesto:</label>
               <input
                 className="form-control"
                 name="funcion"
@@ -347,7 +349,7 @@ export class Form extends React.Component {
             </FormGroup>
             
             <FormGroup>
-              <label class="a">Empresa:</label>
+              <label className="a">Empresa:</label>
               <input
                 className="form-control"
                 name="empresa"
@@ -358,7 +360,7 @@ export class Form extends React.Component {
             </FormGroup>
             
             <FormGroup>
-              <label class="a">Ciudad:</label>
+              <label className="a">Ciudad:</label>
               <input
                 className="form-control"
                 name="city"
@@ -369,7 +371,7 @@ export class Form extends React.Component {
             </FormGroup>
             
             <FormGroup>
-              <label class="a">Pais:</label>
+              <label className="a">Pais:</label>
               <input
                 className="form-control"
                 name="country"
@@ -405,7 +407,7 @@ export class Form extends React.Component {
 
           <ModalBody>
             {/* <FormGroup>
-              <label class="a">
+              <label className="a">
                 Id: 
               </label>
               
@@ -417,25 +419,27 @@ export class Form extends React.Component {
               />
             </FormGroup> */}
             <FormGroup>
-              <label class="a">Nombres y Apellidos:</label>
+              <label className="a"  htmlFor="name">Nombres y Apellidos:</label>
               <input
                 className="form-control"
                 name="name"
+                id="name"
                 required
                 placeholder="Ingresar Nombre y Apellido"
                 type="text"
                 onChange={this.handleChange}
                 aria-describedby="nameHelp"
-                id="name"
+                
               />
             </FormGroup>
 
             <FormGroup>
-              <label class="a">Funcion | Puesto:</label>
+              <label className="a" htmlFor="funcion">Funcion | Puesto:</label>
               <input
                 className="form-control"
                 name="funcion"
                 required
+                id="funcion"
                 placeholder="Ingresar el puesto en el que se desempeña"
                 type="text"
                 onChange={this.handleChange}
@@ -443,10 +447,11 @@ export class Form extends React.Component {
             </FormGroup>
 
             <FormGroup>
-              <label class="a">Empresa:</label>
+              <label className="a" htmlFor="company">Empresa:</label>
               <input
                 className="form-control"
                 name="empresa"
+                id="company"
                 type="text"
                 placeholder="Ingresar el Nombre de la Empresa"
                 required
@@ -454,10 +459,11 @@ export class Form extends React.Component {
               />
             </FormGroup>
             <FormGroup>
-              <label class="a">Ciudad:</label>
+              <label className="a" htmlFor="city">Ciudad:</label>
               <input
                 className="form-control"
                 name="city"
+                id="city"
                 type="text"
                 placeholder="Ingresar el Nombre de la Ciudad"
                 required
@@ -465,10 +471,11 @@ export class Form extends React.Component {
               />
             </FormGroup>
             <FormGroup>
-              <label class="a">Pais:</label>
+              <label className="a" htmlFor="country">Pais:</label>
               <input
                 className="form-control"
                 name="country"
+                id="country"
                 type="text"
                 placeholder="Ingresar el Nombre del Pais"
                 required

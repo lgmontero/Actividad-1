@@ -1,5 +1,5 @@
 import React from "react";
- 
+ import {Country} from "./Country"
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {Table,Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter,} from "reactstrap";
@@ -37,43 +37,33 @@ const data = [
 //   }
 // }
 
-
-
-
-
 const options = [
+  
+    
+  { test: "1" },
+  { test: "2" }
+
 ];
 
 
 
 export class City extends React.Component {
 
-  
-
   state = {
     data: data, 
-  
+   
     modalActualizar: false,
     modalInsertar: false,
     
     form: {
       id: "",
       city: "",
-      test:"",
-      
+      test: {}
        },
     error: {},
-    testi: [],
-
   };
-  componentDidMount() {
-    if (localStorage.getItem("datac") != null) {
-      this.setState({
-        testi: JSON.parse(localStorage.getItem("datac")),
-      });
-    }
-}
 
+ 
 
   mostrarModalActualizar = (dato) => {
     this.setState({
@@ -169,8 +159,6 @@ export class City extends React.Component {
     let error = {};
     var valida = true;
 
-    
-  
     if (this.state.form.city.trim() === "") {
       valida = false;
       error.city = window.confirm(
@@ -203,7 +191,7 @@ export class City extends React.Component {
           id: "",
           city: "",
           country: "",
-          test: []
+          test: {},
 
         },
       });
@@ -216,10 +204,10 @@ export class City extends React.Component {
     });
   };
   handleOptions = (e) => {
-    e.preventDefault();
+
     
     this.setState({
-      options:  JSON.parse(e.target.value) ,
+      form: { ...this.state.form, [e.target.test]: e.target.value },
     })
   };
 
@@ -405,20 +393,14 @@ export class City extends React.Component {
                 name= "test"
                 placeholder="Ingresar el Nombre del Pais"
                 required
-                value={JSON.stringify(this.state.country)}
+                value={this.state.test}
                 onChange={this.handleOptions}
                 
               > 
-              <option value={JSON.stringify({})}>selec</option>
-
-              {options.forEach(({ country, id }) => (
-                <option Key= {id+1} value= {JSON.stringify(country)}>{country}</option>))}
+              {options.map(({ test }) => <option value={test} >{test}</option>)}
               </select>
             </FormGroup>
           </ModalBody>
-         
-
-
 
           <ModalFooter>
             <Button

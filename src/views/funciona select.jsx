@@ -37,11 +37,15 @@ const data = [
 //   }
 // }
 
-
-
-
-
 const options = [
+  
+    
+  { test: 'flavor' },
+  { test:  'ddt'},
+  { test: 'yummy'},
+  { test: 'red' },
+  { test: 'green' },
+  { test: 'yellow' }
 ];
 
 
@@ -52,7 +56,7 @@ export class City extends React.Component {
 
   state = {
     data: data, 
-  
+   
     modalActualizar: false,
     modalInsertar: false,
     
@@ -60,20 +64,18 @@ export class City extends React.Component {
       id: "",
       city: "",
       test:"",
-      
+      testi: [],
        },
     error: {},
-    testi: [],
-
   };
   componentDidMount() {
     if (localStorage.getItem("datac") != null) {
       this.setState({
-        testi: JSON.parse(localStorage.getItem("datac")),
+        options: JSON.parse(localStorage.getItem("datac")),
       });
     }
 }
-
+ 
 
   mostrarModalActualizar = (dato) => {
     this.setState({
@@ -216,10 +218,10 @@ export class City extends React.Component {
     });
   };
   handleOptions = (e) => {
-    e.preventDefault();
+
     
     this.setState({
-      options:  JSON.parse(e.target.value) ,
+      form: { ...this.state.form, [e.target.name]: e.target.value },
     })
   };
 
@@ -405,20 +407,14 @@ export class City extends React.Component {
                 name= "test"
                 placeholder="Ingresar el Nombre del Pais"
                 required
-                value={JSON.stringify(this.state.country)}
+                value={this.state.form.testi}
                 onChange={this.handleOptions}
                 
               > 
-              <option value={JSON.stringify({})}>selec</option>
-
-              {options.forEach(({ country, id }) => (
-                <option Key= {id+1} value= {JSON.stringify(country)}>{country}</option>))}
+              {options.map(({ test }) => <option value={test} >{test}</option>)}
               </select>
             </FormGroup>
           </ModalBody>
-         
-
-
 
           <ModalFooter>
             <Button

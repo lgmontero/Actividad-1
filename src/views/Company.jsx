@@ -10,7 +10,7 @@ import {
   ModalBody,
   FormGroup,
   ModalFooter,
-  FormFeedback,
+  
 } from "reactstrap";
 
 const data = [
@@ -27,7 +27,7 @@ const data = [
     country: "Chile",
   },
   {
-    id: 2,
+    id: 3,
     empresa: "Petrobras",
     city: "Natal",
     country: "Brasil",
@@ -154,27 +154,27 @@ export class Company extends React.Component {
       error.funcion = window.confirm(
         "Por Favor, Ingrese en nombre de su Empresa"
       );
-      {
+      
         return;
-      }
+      
     }
     if (this.state.form.city.trim() === "") {
       valida = false;
       error.city = window.confirm(
         "Por Favor, ingresar un valor en campo Ciudad"
       );
-      {
+      
         return;
-      }
+      
     }
     if (this.state.form.country.trim() === "") {
       valida = false;
       error.country = window.confirm(
         "Por Favor, ingresar un valor en campo Pais"
       );
-      {
+      
         return;
-      }
+      
     }
     this.setState({
       error: error,
@@ -222,7 +222,7 @@ export class Company extends React.Component {
                 <th>Acción</th>
                
                 <th>
-                {" "}
+                {' '}
                   <Button
                       color="btn btn-success btn-sm"
                       onClick={() => this.mostrarModalInsertar()}
@@ -242,13 +242,13 @@ export class Company extends React.Component {
                   <td>{dato.country}</td>
 
                   <td>
-                   {" "}
+                   {' '}
                     <Button
                       color="btn btn-primary btn-sm"
                       onClick={() => this.mostrarModalActualizar(dato)}
                     >
                       Editar
-                    </Button>{" "}
+                    </Button>{' '}
                     <Button
                       color="btn btn-danger btn-sm"
                       onClick={() => this.eliminar(dato)}
@@ -271,7 +271,7 @@ export class Company extends React.Component {
 
           <ModalBody>
             {/* <FormGroup >
-              <label class="a">
+              <label className="a">
                Id:
               </label>
             
@@ -284,7 +284,7 @@ export class Company extends React.Component {
             </FormGroup> */}
                        
             <FormGroup>
-              <label class="a">Empresa:</label>
+              <label className="a">Empresa:</label>
               <input
                 className="form-control"
                 name="empresa"
@@ -295,7 +295,7 @@ export class Company extends React.Component {
             </FormGroup>
             
             <FormGroup>
-              <label class="a">Ciudad:</label>
+              <label className="a">Ciudad:</label>
               <input
                 className="form-control"
                 name="city"
@@ -306,7 +306,7 @@ export class Company extends React.Component {
             </FormGroup>
             
             <FormGroup>
-              <label class="a">Pais:</label>
+              <label className="a">Pais:</label>
               <input
                 className="form-control"
                 name="country"
@@ -342,7 +342,7 @@ export class Company extends React.Component {
 
           <ModalBody>
             {/* <FormGroup>
-              <label class="a">
+              <label className="a">
                 Id: 
               </label>
               
@@ -356,7 +356,7 @@ export class Company extends React.Component {
             
 
             <FormGroup>
-              <label class="a">Empresa:</label>
+              <label className="a">Empresa:</label>
               <input
                 className="form-control"
                 name="empresa"
@@ -367,7 +367,7 @@ export class Company extends React.Component {
               />
             </FormGroup>
             <FormGroup>
-              <label class="a">Ciudad:</label>
+              <label className="a">Ciudad:</label>
               <input
                 className="form-control"
                 name="city"
@@ -378,7 +378,7 @@ export class Company extends React.Component {
               />
             </FormGroup>
             <FormGroup>
-              <label class="a">Pais:</label>
+              <label className="a">Pais:</label>
               <input
                 className="form-control"
                 name="country"
