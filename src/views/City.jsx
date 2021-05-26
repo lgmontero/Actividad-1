@@ -1,79 +1,64 @@
 import React from "react";
- 
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Table,Button, Container, Modal, ModalHeader, ModalBody, FormGroup, ModalFooter,} from "reactstrap";
+import {
+  Table,
+  Button,
+  Container,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  FormGroup,
+  ModalFooter,
+} from "reactstrap";
 
-
-
-const data = [
-  // {
-  //   id: 1,
-  //   city: "La Rioja",
-  //   country: "Argentina",
-  //   test: "prueba1"
-  // },
-  // {
-  //   id: 2,
-  //   city: "Santiago",
-  //   country: "Chile",
-  //   test: "prueba2"
-  // },
-  // {
-  //   id: 3,
-  //   city: "Natal",
-  //   country: "Brasil",
-  //   test: "prueba3"
-  // },
+const cities = [
+  {
+    id: 1,
+    city: "La Rioja",
+    country: "Argentina",
+  },
+  {
+    id: 2,
+    city: "Santiago",
+    country: "Chile",
+  },
+  {
+    id: 3,
+    city: "Natal",
+    country: "Brasil",
+  },
 ];
-
-
-
-// componentDidMount() {
-//   if (localStorage.getItem("data") != null) {
-//     this.setState({
-//       data: JSON.parse(localStorage.getItem("data")),
-//     });
-//   }
-// }
-
-
-
-
-
-const options = [
-];
-
-
 
 export class City extends React.Component {
-
-  
-
-  state = {
-    data: data, 
-  
-    modalActualizar: false,
-    modalInsertar: false,
-    
-    form: {
-      id: "",
-      city: "",
-      test:"",
-      
-       },
-    error: {},
-    testi: [],
-
-  };
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {
+      dataCity: cities,
+      modalActualizar: false,
+      modalInsertar: false,
+      form: {
+        id: "",
+        city: "",
+        country: "",
+      },
+      error: {},
+      countries: [],
+    };
+  }
   componentDidMount() {
-    if (localStorage.getItem("datac") != null) {
+    if (localStorage.getItem("datacountry") != null) {
       this.setState({
-        testi: JSON.parse(localStorage.getItem("datac")),
+        countries: JSON.parse(localStorage.getItem("datacountry")),
       });
     }
-}
-
+    if (localStorage.getItem("datacity") != null) {
+      this.setState({
+        dataCity: JSON.parse(localStorage.getItem("datacity")),
+      });
+    }
+  }
 
   mostrarModalActualizar = (dato) => {
     this.setState({
@@ -100,16 +85,20 @@ export class City extends React.Component {
   };
 
   cerrarModalInsertar = () => {
-    this.setState({ modalInsertar: false });
+    this.setState({
+      modalInsertar: false,
+      form: {
+        id: "",
+        city: "",
+        country: "",
+      },
+    });
   };
-  
-  
 
   editar = (dato) => {
     var valida = true;
     let error = {};
     var contador = 0;
-
 
     if (this.state.form.city.trim() === "") {
       valida = false;
@@ -130,18 +119,20 @@ export class City extends React.Component {
     });
     if (valida === true) {
       window.confirm("Se Modifico con Exito el Registro");
-      var arreglo = this.state.data;
+      var arreglo = this.state.dataCity;
       arreglo.forEach((registro) => {
         if (dato.id === registro.id) {
-          
           arreglo[contador].city = dato.city;
           arreglo[contador].country = dato.country;
         }
         contador++;
       });
-      this.setState({ data: arreglo, modalActualizar: false,
-        form: { id: "",  city: "", country: "", },
+      this.setState({
+        dataCity: arreglo,
+        modalActualizar: false,
+        form: { id: "", city: "", country: "" },
       });
+      localStorage.setItem("datacity", JSON.stringify(this.state.dataCity));
     }
   };
 
@@ -151,43 +142,40 @@ export class City extends React.Component {
     );
     if (opcion === true) {
       var contador = 0;
-      var arreglo = this.state.data;
+      var arreglo = this.state.dataCity;
       arreglo.forEach((registro) => {
         if (dato.id === registro.id) {
           arreglo.splice(contador, 1);
         }
         contador++;
       });
-      this.setState({ data: arreglo, modalActualizar: false });
+      this.setState({ dataCity: arreglo, modalActualizar: false });
+      localStorage.setItem("datacity", JSON.stringify(this.state.dataCity));
     }
   };
 
   insertar = (e) => {
     var valorNuevo = { ...this.state.form };
-    valorNuevo.id = this.state.data.length + 1;
-    var lista = this.state.data;
+    valorNuevo.id = this.state.dataCity.length + 1;
+    var lista = this.state.dataCity;
     let error = {};
     var valida = true;
 
-    
-  
     if (this.state.form.city.trim() === "") {
       valida = false;
       error.city = window.confirm(
         "Por Favor, ingresar un valor en campo Ciudad"
       );
-      
-        return;
-      
+
+      return;
     }
     if (this.state.form.country.trim() === "") {
       valida = false;
       error.country = window.confirm(
         "Por Favor, ingresar un valor en campo Pais"
       );
-      
-        return;
-      
+
+      return;
     }
     this.setState({
       error: error,
@@ -196,15 +184,15 @@ export class City extends React.Component {
     if (valida === true) {
       window.confirm("El registro se Guardo con Exito!!");
       lista.push(valorNuevo);
+      localStorage.setItem("datacity", JSON.stringify(this.state.dataCity));
       this.setState({
         modalInsertar: false,
-        data: lista,
+
+        dataCity: lista,
         form: {
           id: "",
           city: "",
           country: "",
-          test: []
-
         },
       });
     }
@@ -215,21 +203,18 @@ export class City extends React.Component {
       form: { ...this.state.form, [e.target.name]: e.target.value },
     });
   };
-  handleOptions = (e) => {
+
+  handleCountry = (e) => {
     e.preventDefault();
-    
     this.setState({
-      options:  JSON.parse(e.target.value) ,
-    })
+      form: { ...this.state.form, [e.target.name]: JSON.parse(e.target.value) },
+    });
   };
 
   render() {
-
-    
     return (
       <>
         <Container>
-          
           <br />
           <thead>
             <h1>Registro de Ciudades</h1>
@@ -241,37 +226,33 @@ export class City extends React.Component {
                 <th>ID</th>
                 <th>Ciudad</th>
                 <th>Pais</th>
-                <th>Prueba</th>
-                <th>Acción</th>
-               
-                {' '}
+                <th>Acción</th>{" "}
                 <th>
-                    <Button
-                      color="btn btn-success btn-sm"
-                      onClick={() => this.mostrarModalInsertar()}
-                    >
-                      Registrar
-                    </Button>
-                    </th>
+                  <Button
+                    color="btn btn-success btn-sm"
+                    onClick={() => this.mostrarModalInsertar()}
+                  >
+                    Registrar
+                  </Button>
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              {this.state.data.map((dato) => (
+              {this.state.dataCity.map((dato) => (
                 <tr key={dato.id}>
                   <td>{dato.id}</td>
                   <td>{dato.city}</td>
                   <td>{dato.country}</td>
-                  <td>{dato.test}</td>
 
                   <td>
-                   {' '}
+                    {" "}
                     <Button
                       color="btn btn-primary btn-sm"
                       onClick={() => this.mostrarModalActualizar(dato)}
                     >
                       Editar
-                    </Button>{' '}
+                    </Button>{" "}
                     <Button
                       color="btn btn-danger btn-sm"
                       onClick={() => this.eliminar(dato)}
@@ -285,7 +266,7 @@ export class City extends React.Component {
           </Table>
         </Container>
 
-        <Modal  isOpen={this.state.modalActualizar}>
+        <Modal isOpen={this.state.modalActualizar}>
           <ModalHeader>
             <div>
               <h3>Editar Registro</h3>
@@ -294,7 +275,7 @@ export class City extends React.Component {
 
           <ModalBody>
             {/* <FormGroup >
-              <label className="a">
+              <label class="a">
                Id:
               </label>
             
@@ -305,11 +286,9 @@ export class City extends React.Component {
                 value={this.state.form.id}
               />
             </FormGroup> */}
-                       
-           
-            
+
             <FormGroup>
-              <label className="a">Ciudad:</label>
+              <label class="a">Ciudad:</label>
               <input
                 className="form-control"
                 name="city"
@@ -318,16 +297,16 @@ export class City extends React.Component {
                 value={this.state.form.city}
               />
             </FormGroup>
-            
+
             <FormGroup>
-              <label className="a">Pais:</label>
+              <label class="a">Pais:</label>
               <input
                 className="form-control"
                 name="country"
+                readOnly
                 type="text"
                 onChange={this.handleChange}
                 value={this.state.form.country}
-                
               />
             </FormGroup>
           </ModalBody>
@@ -351,13 +330,13 @@ export class City extends React.Component {
         <Modal isOpen={this.state.modalInsertar}>
           <ModalHeader>
             <div>
-              <h3>Registro de Datos</h3>
+              <h3>Registro de Ciudades</h3>
             </div>
           </ModalHeader>
 
           <ModalBody>
             {/* <FormGroup>
-              <label className="a">
+              <label class="a">
                 Id: 
               </label>
               
@@ -365,14 +344,12 @@ export class City extends React.Component {
                 className="form-control"
                 readOnly
                 type="text"
-                value={this.state.data.length+1}
+                value={this.state.dataCity.length+1}
               />
             </FormGroup> */}
-            
 
-            
             <FormGroup>
-              <label className="a">Ciudad:</label>
+              <label class="a">Ciudad:</label>
               <input
                 className="form-control"
                 name="city"
@@ -383,42 +360,28 @@ export class City extends React.Component {
               />
             </FormGroup>
             <FormGroup>
-              <label className="a">Pais:</label>
-              <input
+              <label className="a">Pais</label>
+
+              <select
                 className="form-control"
                 name="country"
-                type="text"
-                placeholder="Ingresar el Nombre del Pais"
-                required
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-
-
-
-            <FormGroup>
-              <label className="a">Prueba:</label>
-              
-              <select
-                
-                className="form-control"
-                name= "test"
                 placeholder="Ingresar el Nombre del Pais"
                 required
                 value={JSON.stringify(this.state.country)}
-                onChange={this.handleOptions}
-                
-              > 
-              <option value={JSON.stringify({})}>selec</option>
+                onChange={this.handleCountry}
+              >
+                <option disabled selected hidden>
+                  Seleccionar el Nombre del Pais
+                </option>
 
-              {options.forEach(({ country, id }) => (
-                <option Key= {id+1} value= {JSON.stringify(country)}>{country}</option>))}
+                {this.state.countries.map(({ country, id }, index) => (
+                  <option Key={id + 1} value={JSON.stringify(country)}>
+                    {country}
+                  </option>
+                ))}
               </select>
             </FormGroup>
           </ModalBody>
-         
-
-
 
           <ModalFooter>
             <Button

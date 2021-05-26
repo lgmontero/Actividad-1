@@ -16,23 +16,28 @@ import {
 const jobs = [
   {
     id: 1,
-    name: "Pedro Carrizo",
-    workstation: "Empleado",
+    workstation: "Especialista en Soporte",
     company: "Develop SA",
     city: "La Rioja",
     country: "Argentina",
   },
   {
     id: 2,
-    name: "Gonzalo Gonzalez",
-    workstation: "Empleado",
+    workstation: "Asesor Comercial",
+    company: "Sancor SA",
+    city: "Cordoba",
+    country: "Argentina",
+  },
+  {
+    id: 3,
+    workstation: "Especialistas en Datos",
     company: "Sancor SA",
     city: "Cordoba",
     country: "Argentina",
   },
 ];
 
-export class Form extends React.Component {
+export class Job extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
@@ -42,7 +47,7 @@ export class Form extends React.Component {
       modalInsert: false,
       form: {
         id: "",
-        name: "",
+        
         workstation: "",
         company: "",
         city: "",
@@ -113,13 +118,7 @@ export class Form extends React.Component {
     let error = {};
     var counter = 0;
 
-    if (this.state.form.name.trim() === "") {
-      valid = false;
-      error.name = window.confirm(
-        "Por Favor, Ingresar un valor en campo Nombre y Apellido"
-      );
-      return;
-    }
+   
     if (this.state.form.workstation.trim() === "") {
       valid = false;
       error.workstation = window.confirm(
@@ -156,7 +155,7 @@ export class Form extends React.Component {
       var fix = this.state.dataJobs;
       fix.forEach((register) => {
         if (datum.id === register.id) {
-          fix[counter].name = datum.name;
+          
           fix[counter].workstation = datum.workstation;
           fix[counter].company = datum.company;
           fix[counter].city = datum.city;
@@ -169,7 +168,6 @@ export class Form extends React.Component {
         modalEdit: false,
         form: {
           id: "",
-          name: "",
           workstation: "",
           company: "",
           city: "",
@@ -205,14 +203,7 @@ export class Form extends React.Component {
     let error = {};
     var valid = true;
 
-    if (this.state.form.name.trim() === "") {
-      valid = false;
-      error.name = window.confirm(
-        "Por Favor, Ingresar un valor en campo Nombre y Apellido"
-      );
-
-      return;
-    }
+    
     if (this.state.form.workstation.trim() === "") {
       valid = false;
       error.workstation = window.confirm(
@@ -258,7 +249,6 @@ export class Form extends React.Component {
         dataJobs: list,
         form: {
           id: "",
-          name: "",
           workstation: "",
           company: "",
           city: "",
@@ -273,15 +263,18 @@ export class Form extends React.Component {
       form: { ...this.state.form, [e.target.name]: e.target.value },
     });
   };
-  handlecompanies = (e) => {
+  handleCompanies = (e) => {
     e.preventDefault();
     this.setState({
       form: { ...this.state.form, [e.target.name]: JSON.parse(e.target.value) },
     });
   };
+  
 
   render() {
-    let deleteRepeated = companies(this.state.companies);
+    let deleteRepeatedCompanies = companies(this.state.companies);
+    
+    
     return (
       <>
         <Container>
@@ -294,7 +287,7 @@ export class Form extends React.Component {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nombres y Apellidos</th>
+                
                 <th>Función | Puesto</th>
                 <th>Empresa</th>
                 <th>Ciudad</th>
@@ -314,10 +307,10 @@ export class Form extends React.Component {
             </thead>
 
             <tbody>
-              {this.state.dataJobs.map((datum, idx) => (
+              {this.state.dataJobs.map((datum) => (
                 <tr key={datum.id}>
                   <td>{datum.id}</td>
-                  <td>{datum.name}</td>
+                 
                   <td>{datum.workstation}</td>
                   <td>{datum.company}</td>
                   <td>{datum.city}</td>
@@ -364,19 +357,7 @@ export class Form extends React.Component {
                 value={this.state.form.id}
               />
             </FormGroup> */}
-            <FormGroup>
-              <label className="a">Nombres y Apellidos</label>
-
-              <input
-                className="form-control"
-                
-                name="name"
-                id="name"
-                type="text"
-                onChange={this.handleChange}
-                value={this.state.form.name}
-              />
-            </FormGroup>
+          
 
             <FormGroup>
               <label className="a">Función | Puesto</label>
@@ -462,21 +443,7 @@ export class Form extends React.Component {
                 value={this.state.dataJobs.length+1}
               />
             </FormGroup> */}
-            <FormGroup>
-              <label className="a" htmlFor="name">
-                Nombres y Apellidos
-              </label>
-              <input
-                className="form-control"
-                name="name"
-                id="name"
-                required
-                placeholder="Ingresar Nombre y Apellido"
-                type="text"
-                onChange={this.handleChange}
-                aria-describedby="nameHelp"
-              />
-            </FormGroup>
+           
 
             <FormGroup>
               <label className="a" htmlFor="workstation">
@@ -505,19 +472,19 @@ export class Form extends React.Component {
                 placeholder="Ingresar el Nombre de la Empresa"
                 required
                 value={JSON.stringify(this.state.company)}
-                onChange={this.handlecompanies}
+                onChange={this.handleCompanies}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
                   Seleccione la Empresa
                 </option>
-                {deleteRepeated.map((company, id) => (
+                {deleteRepeatedCompanies.map((company, id) => (
                   <option Key={id + 1} value={JSON.stringify(company)}>
                     {company}
                   </option>
                 ))}
               </select>
             </FormGroup>
-
+           
             <FormGroup>
               <label className="a">Ciudad</label>
               <select
@@ -526,22 +493,17 @@ export class Form extends React.Component {
                 type="text"
                 required
                 value={JSON.stringify(this.state.city)}
-                onChange={this.handlecompanies}
+                onChange={this.handleCompanies}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
                   Seleccione la Ciudad
                 </option>
-                
-                {this.state.companies
-                  .filter(
-                    (elements) =>
-                      elements.company=== this.state.form.company
-                  )
-                  .map(({ city, index }) => (
-                    <option Key={index} value={JSON.stringify(city)}>
-                      {city}
-                    </option>
-                  ))}
+              
+                {this.state.companies.filter((elements)=>elements.company === this.state.form.company).map(({city, index}) =>(<option Key={index}  value={JSON.stringify(city)}>{city}</option> ))}
+                  
+
+                  
+                  
               </select>
             </FormGroup>
             <FormGroup>
@@ -553,18 +515,16 @@ export class Form extends React.Component {
                 
                 required
                 value={JSON.stringify(this.state.country)}
-                onChange={this.handlecompanies}
+                onChange={this.handleCompanies}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
                   Seleccione el Pais
                 </option>
 
-                {this.state.companies
-                  .filter(
+                {this.state.companies.filter(
                     (elements) =>
                       elements.city === this.state.form.city
-                  )
-                  .map(({ country, index }) => (
+                  ).map(( {country, index} ) => (
                     <option Key={index} value={JSON.stringify(country)}>
                       {country}
                     </option>

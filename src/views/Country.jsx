@@ -2,16 +2,18 @@ import React from "react";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import {  Table,  Button,  Container,  Modal,  ModalHeader,  ModalBody,  FormGroup,  ModalFooter,} from "reactstrap";
+import {
+  Table,
+  Button,
+  Container,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  FormGroup,
+  ModalFooter,
+} from "reactstrap";
 
-
-
-// (()=>{
-
-//     localStorage.clear();
-
-// })();
-const datac = [
+const countries = [
   {
     id: 1,
     country: "Argentina",
@@ -24,31 +26,30 @@ const datac = [
     id: 3,
     country: "Brasil",
   },
-  
 ];
 
 export class Country extends React.Component {
-  constructor(props){
-  super(props) 
-  this.props=props
-  this.state = {
-    datac: datac,
-    modalActualizar: false,
-    modalInsertar: false,
-    form: {
-      id: "",
-      country: "",
-    },
-    error: {},
-  };
+  constructor(props) {
+    super(props);
+    this.props = props;
+    this.state = {
+      dataCountry: countries,
+      modalActualizar: false,
+      modalInsertar: false,
+      form: {
+        id: "",
+        country: "",
+      },
+      error: {},
+    };
   }
   componentDidMount() {
-    if (localStorage.getItem("datac") != null) {
+    if (localStorage.getItem("datacountry") != null) {
       this.setState({
-        datac: JSON.parse(localStorage.getItem("datac")),
+        dataCountry: JSON.parse(localStorage.getItem("datacountry")),
       });
     }
-}
+  }
 
   mostrarModalActualizar = (dato) => {
     this.setState({
@@ -74,11 +75,14 @@ export class Country extends React.Component {
   };
 
   cerrarModalInsertar = () => {
-    this.setState({ modalInsertar: false });
+    this.setState({
+      modalInsertar: false,
+      form: {
+        id: "",
+        country: "",
+      },
+    });
   };
-
-
-  
 
   editar = (dato) => {
     var valida = true;
@@ -97,16 +101,22 @@ export class Country extends React.Component {
     });
     if (valida === true) {
       window.confirm("Se Modifico con Exito el Registro");
-      var arreglo = this.state.datac;
+      var arreglo = this.state.dataCountry;
       arreglo.forEach((registro) => {
         if (dato.id === registro.id) {
           arreglo[contador].country = dato.country;
         }
         contador++;
       });
-      this.setState({ datac: arreglo, modalActualizar: false,
-        form: { id: "", country: "", },
+      this.setState({
+        dataCountry: arreglo,
+        modalActualizar: false,
+        form: { id: "", country: "" },
       });
+      localStorage.setItem(
+        "datacountry",
+        JSON.stringify(this.state.dataCountry)
+      );
     }
   };
 
@@ -116,35 +126,35 @@ export class Country extends React.Component {
     );
     if (opcion === true) {
       var contador = 0;
-      var arreglo = this.state.datac;
+      var arreglo = this.state.dataCountry;
       arreglo.forEach((registro) => {
         if (dato.id === registro.id) {
           arreglo.splice(contador, 1);
         }
         contador++;
       });
-      this.setState({ datac: arreglo, modalActualizar: false });
+      this.setState({ dataCountry: arreglo, modalActualizar: false });
+      localStorage.setItem(
+        "datacountry",
+        JSON.stringify(this.state.dataCountry)
+      );
     }
   };
 
   insertar = (e) => {
     var valorNuevo = { ...this.state.form };
-    valorNuevo.id = this.state.datac.length + 1;
-    var lista = this.state.datac;
+    valorNuevo.id = this.state.dataCountry.length + 1;
+    var lista = this.state.dataCountry;
     let error = {};
     var valida = true;
-    
-    
-       
 
     if (this.state.form.country.trim() === "") {
       valida = false;
       error.country = window.confirm(
         "Por Favor, ingresar un valor en campo Pais"
       );
-      
-        return;
-      
+
+      return;
     }
     this.setState({
       error: error,
@@ -153,12 +163,14 @@ export class Country extends React.Component {
     if (valida === true) {
       window.confirm("El registro se Guardo con Exito!!");
       lista.push(valorNuevo);
-      localStorage.setItem('datac', JSON.stringify(this.state.datac));
-     
-     
-        this.setState({
+      localStorage.setItem(
+        "datacountry",
+        JSON.stringify(this.state.dataCountry)
+      );
+
+      this.setState({
         modalInsertar: false,
-        datac: lista,
+        dataCountry: lista,
         form: {
           id: "",
           country: "",
@@ -173,14 +185,10 @@ export class Country extends React.Component {
     });
   };
 
-
- 
-
   render() {
-      return (
+    return (
       <>
         <Container>
-          
           <br />
           <thead>
             <h1>Registro de Paises</h1>
@@ -191,34 +199,32 @@ export class Country extends React.Component {
               <tr>
                 <th>ID</th>
                 <th>Pais</th>
-                <th>Acción</th>
-               
-                {' '}
+                <th>Acción</th>{" "}
                 <th>
-                    <Button
-                      color="btn btn-success btn-sm"
-                      onClick={() => this.mostrarModalInsertar()}
-                    >
-                      Registrar
-                    </Button>
-                    </th>
+                  <Button
+                    color="btn btn-success btn-sm"
+                    onClick={() => this.mostrarModalInsertar()}
+                  >
+                    Registrar
+                  </Button>
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              {this.state.datac.map((dato) => (
+              {this.state.dataCountry.map((dato) => (
                 <tr key={dato.id}>
                   <td>{dato.id}</td>
                   <td>{dato.country}</td>
 
                   <td>
-                   {' '}
+                    {" "}
                     <Button
                       color="btn btn-primary btn-sm"
                       onClick={() => this.mostrarModalActualizar(dato)}
                     >
                       Editar
-                    </Button>{' '}
+                    </Button>{" "}
                     <Button
                       color="btn btn-danger btn-sm"
                       onClick={() => this.eliminar(dato)}
@@ -232,7 +238,7 @@ export class Country extends React.Component {
           </Table>
         </Container>
 
-        <Modal  isOpen={this.state.modalActualizar}>
+        <Modal isOpen={this.state.modalActualizar}>
           <ModalHeader>
             <div>
               <h3>Editar Registro</h3>
@@ -252,8 +258,7 @@ export class Country extends React.Component {
                 value={this.state.form.id}
               />
             </FormGroup> */}
-                       
-                       
+
             <FormGroup>
               <label className="a">Pais:</label>
               <input
@@ -285,7 +290,7 @@ export class Country extends React.Component {
         <Modal isOpen={this.state.modalInsertar}>
           <ModalHeader>
             <div>
-              <h3>Registro de Datos</h3>
+              <h3>Registro de Paises</h3>
             </div>
           </ModalHeader>
 
@@ -299,11 +304,10 @@ export class Country extends React.Component {
                 className="form-control"
                 readOnly
                 type="text"
-                value={this.state.datac.length+1}
+                value={this.state.dataCountry.length+1}
               />
             </FormGroup> */}
-              
-           
+
             <FormGroup>
               <label className="a">Pais:</label>
               <input
