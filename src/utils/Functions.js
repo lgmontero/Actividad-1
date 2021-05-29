@@ -10,7 +10,7 @@ export const cities = (event)=>{
     return listCities;
 }
 export const countries = (event)=>{
-    console.log(event);
+    // console.log(event);
     let listCountries=[];
     // console.log(listCountries);
     event.map(({ country}) => (
@@ -34,4 +34,16 @@ export const companies = (event)=>{
 
     return listCompanies;
    
+}
+
+export const jobs = (event)=>{
+  // console.log(event);
+  let listWorkstation=[];
+  event.map(({ workstation }) => (
+    listWorkstation.includes(workstation) ? null : listWorkstation.push(workstation)
+  ))
+  // console.log(listWorkstation);
+
+  return listWorkstation;
+ 
 }

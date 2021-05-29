@@ -38,66 +38,129 @@
 }
 
 .a {
-  color: rgb(54, 108, 179)!important;
+  color: rgb(54, 108, 179) !important;
   font-weight: 600 !important;
   /* padding-bottom: 5px!important; */
   /* padding-top: 5px!important; */
-  padding-left: 5px!important;
+  padding-left: 5px !important;
+}
+
+.btn-marg {
+  margin-right: 5px !important;
+  margin-bottom: 5px !important;
 }
 
 .grad {
-  background-image: linear-gradient(rgb(39, 63, 99), rgba(39, 63, 99, 0.973), rgba(32, 58, 104, 0.959));
+  background-image: linear-gradient(
+    rgb(39, 63, 99),
+    rgba(39, 63, 99, 0.973),
+    rgba(32, 58, 104, 0.959)
+  );
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 12px 0 rgb(0, 0, 0);
-  width: 100%!important;
+  width: 100% !important;
   height: auto;
-  /* z-index: 101 !important; */
-  /* position: fixed ; */
-  
-  }
-  #co0 {
-    background-color:none;
-    list-style-type:none;
-    /* display: inline-block; */
-    position:relative;
-    margin: 10px;
-    padding: 15px;
-    width: 30.3% !important;
-    height: auto;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 16px!important;
-    }
+  z-index: 101 !important;
+  position: fixed;
+}
+#co0 {
+  background-color: none;
+  list-style-type: none;
+  /* display: inline-block; */
+  position: relative;
+  margin: 10px;
+  padding: 15px;
+  width: 30.3% !important;
+  height: auto;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 16px !important;
+}
 
-  .link {
-    display:inline-block;
-    color: rgb(255, 255, 255);
-    padding: 2px 10px;
-    margin-left: 5px;
-    
-    text-decoration: none;
-    }
-     .link #lis6 :hover:not(.active)  {
-    box-shadow: 0 6px rgb(3, 217, 224);
-    color: rgb(255, 255, 255);
-     }
-    .link #lis0 :hover:not(.active) {
-      box-shadow: 0 6px rgb(3, 224, 51);
-      color: rgb(255, 255, 255);
-    }
-    .link #lis1  :hover:not(.active) {
-     box-shadow: 0 6px 0  rgb(213, 226, 36);
-     color: rgb(255, 255, 255);
-    }
-    .link  #lis2  :hover:not(.active) {
-     box-shadow: 0 6px 0  rgb(17, 171, 209);
-     color: rgb(255, 255, 255);
-    }
-    .link  #lis3  :hover:not(.active) {
-     box-shadow: 0 6px 0  rgb(209, 20, 67);
-     color: rgb(255, 255, 255);
-    }
+.link {
+  display: inline-block;
+  color: rgb(255, 255, 255);
+  padding: 2px 10px;
+  margin-left: 5px;
+
+  text-decoration: none;
+}
+.link #lis6 :hover:not(.active) {
+  box-shadow: 0 6px rgb(3, 217, 224);
+  color: rgb(255, 255, 255);
+}
+.link #lis0 :hover:not(.active) {
+  box-shadow: 0 6px rgb(3, 224, 51);
+  color: rgb(255, 255, 255);
+}
+.link #lis1 :hover:not(.active) {
+  box-shadow: 0 6px 0 rgb(213, 226, 36);
+  color: rgb(255, 255, 255);
+}
+.link #lis2 :hover:not(.active) {
+  box-shadow: 0 6px 0 rgb(17, 171, 209);
+  color: rgb(255, 255, 255);
+}
+.link #lis3 :hover:not(.active) {
+  box-shadow: 0 6px 0 rgb(209, 20, 67);
+  color: rgb(255, 255, 255);
+}
+
+.link li a {
+  float: right;
+  padding: 10px !important;
+}
+
+.conteiner-home img {
+  width: auto;
+  height: auto;
+  padding: 250px 0 100px !important;
+  float: left;
+  margin: auto !important;
+}
+.page {
+  margin-left: 20% !important;
+  padding-top: 100px !important;
+}
+.conteiner-jobs img {
+  width: auto;
+  height: auto;
+  padding: 250px 0 100px !important;
+  float: left;
+  margin: 25px 0px 25px 125px!important;
+}
+.pagejobs {
   
-    .link li a {
-      float:right;
-      padding: 10px!important;
-    }
+  padding-top: 100px !important;
+}
+.conteiner-companies img {
+  width: auto;
+  height: auto;
+  padding: 250px 0 100px !important;
+  float: left;
+  margin: 25px 0px 25px 125px!important;
+}
+.pagecompanies {
   
+  padding-top: 100px !important;
+}
+.conteiner-city img {
+  width: auto;
+  height: auto;
+  padding: 250px 0 100px !important;
+  float: left;
+  margin: 25px 0px 25px 125px!important;
+}
+.pagecity {
+  
+  padding-top: 100px !important;
+}
+.conteiner-country img {
+  width: auto;
+  height: auto;
+  padding: 250px 0 100px !important;
+  float: left;
+  margin: 25px 0px 25px 125px!important;
+}
+.pagecountry {
+  
+  padding-top: 100px !important;
+}

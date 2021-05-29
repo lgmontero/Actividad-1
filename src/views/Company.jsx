@@ -107,7 +107,7 @@ export class Company extends React.Component {
   edit = (datum) => {
     var valid = true;
     let error = {};
-    var contador = 0;
+    var counter = 0;
 
     if (this.state.form.company.trim() === "") {
       valid = false;
@@ -138,11 +138,11 @@ export class Company extends React.Component {
       var fix = this.state.dataCompany;
       fix.forEach((register) => {
         if (datum.id === register.id) {
-          fix[contador].company = datum.company;
-          fix[contador].city = datum.city;
-          fix[contador].country = datum.country;
+          fix[counter].company = datum.company;
+          fix[counter].city = datum.city;
+          fix[counter].country = datum.country;
         }
-        contador++;
+        counter++;
       });
       this.setState({
         dataCompany: fix,
@@ -158,13 +158,13 @@ export class Company extends React.Component {
       "Estás Seguro que deseas Eliminar este Registro "
     );
     if (option === true) {
-      var contador = 0;
+      var counter = 0;
       var fix = this.state.dataCompany;
       fix.forEach((register) => {
         if (datum.id === register.id) {
-          fix.splice(contador, 1);
+          fix.splice(counter, 1);
         }
-        contador++;
+        counter++;
       });
       this.setState({ dataCompany: fix, modalEdit: false });
       localStorage.setItem("datacompany", JSON.stringify(this.state.dataCompany));
@@ -229,7 +229,7 @@ export class Company extends React.Component {
     });
   };
 
-  handleCities = (e) => {
+  handleOptions = (e) => {
     e.preventDefault();
     this.setState({
       form: { ...this.state.form, [e.target.name]: JSON.parse(e.target.value) },
@@ -237,7 +237,6 @@ export class Company extends React.Component {
   };
 
   render() {
-    // let listapais = paises(this.state.cities);
     let deleteRepeated = cities(this.state.cities);
     return (
       <>
@@ -257,10 +256,11 @@ export class Company extends React.Component {
                 <th>Acción</th>
 
                 <th>
-                  {" "}
+                  
                   <Button
                     color="btn btn-success btn-sm"
                     onClick={() => this.showModalInsert()}
+                    className="btn-marg"
                   >
                     Registrar
                   </Button>
@@ -277,16 +277,18 @@ export class Company extends React.Component {
                   <td>{datum.country}</td>
 
                   <td>
-                    {" "}
+                    
                     <Button
                       color="btn btn-primary btn-sm"
                       onClick={() => this.openModalEdit(datum)}
+                      className="btn-marg"
                     >
                       Editar
-                    </Button>{" "}
+                    </Button>
                     <Button
                       color="btn btn-danger btn-sm"
                       onClick={() => this.remove(datum)}
+                      className="btn-marg"
                     >
                       Eliminar
                     </Button>
@@ -410,7 +412,7 @@ export class Company extends React.Component {
                 type="text"
                 required
                 value={JSON.stringify(this.state.city)}
-                onChange={this.handleCities}
+                onChange={this.handleOptions}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
                   Seleccione la Ciudad
@@ -431,7 +433,7 @@ export class Company extends React.Component {
                 
                 required
                 value={JSON.stringify(this.state.country)}
-                onChange={this.handleCities}
+                onChange={this.handleOptions}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
                   Seleccione el Pais

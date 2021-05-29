@@ -1,7 +1,8 @@
 import React from "react";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { companies } from "../utils/Functions";
+import { jobs } from "../utils/Functions";
+
 import {
   Table,
   Button,
@@ -13,7 +14,7 @@ import {
   ModalFooter,
 } from "reactstrap";
 
-const jobs = [
+const form = [
   {
     id: 1,
     name: "Pedro Carrizo",
@@ -37,7 +38,7 @@ export class Form extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      dataJobs: jobs,
+      dataForm: form,
       modalEdit: false,
       modalInsert: false,
       form: {
@@ -49,24 +50,22 @@ export class Form extends React.Component {
         country: "",
       },
       error: {},
-      companies: [],
+      jobs: [],
     };
   }
   componentDidMount() {
-    if (localStorage.getItem("datacompany") != null) {
-      this.setState({
-        companies: JSON.parse(localStorage.getItem("datacompany")),
-      });
-    }
     if (localStorage.getItem("datajob") != null) {
       this.setState({
-        dataJobs: JSON.parse(localStorage.getItem("datajob")),
+        jobs: JSON.parse(localStorage.getItem("datajob")),
+      });
+    }
+    if (localStorage.getItem("dataform") != null) {
+      this.setState({
+        dataForm: JSON.parse(localStorage.getItem("dataform")),
       });
     }
   }
 
-
-  
   openModalEdit = (datum) => {
     this.setState({
       form: datum,
@@ -95,7 +94,7 @@ export class Form extends React.Component {
   };
 
   closeModalInsert = () => {
-    this.setState({ 
+    this.setState({
       modalInsert: false,
       form: {
         id: "",
@@ -153,7 +152,7 @@ export class Form extends React.Component {
     });
     if (valid === true) {
       window.confirm("Se Modifico con Exito el Registro");
-      var fix = this.state.dataJobs;
+      var fix = this.state.dataForm;
       fix.forEach((register) => {
         if (datum.id === register.id) {
           fix[counter].name = datum.name;
@@ -165,7 +164,7 @@ export class Form extends React.Component {
         counter++;
       });
       this.setState({
-        dataJobs: fix,
+        dataForm: fix,
         modalEdit: false,
         form: {
           id: "",
@@ -176,7 +175,7 @@ export class Form extends React.Component {
           country: "",
         },
       });
-      localStorage.setItem("datajob", JSON.stringify(this.state.dataJobs));
+      localStorage.setItem("dataform", JSON.stringify(this.state.dataForm));
     }
   };
 
@@ -186,22 +185,22 @@ export class Form extends React.Component {
     );
     if (option === true) {
       var counter = 0;
-      var fix = this.state.dataJobs;
+      var fix = this.state.dataForm;
       fix.forEach((register) => {
         if (datum.id === register.id) {
           fix.splice(counter, 1);
         }
         counter++;
       });
-      this.setState({ dataJobs: fix, modalEdit: false });
-      localStorage.setItem("datajob", JSON.stringify(this.state.dataJobs));
+      this.setState({ dataForm: fix, modalEdit: false });
+      localStorage.setItem("dataform", JSON.stringify(this.state.dataForm));
     }
   };
 
   insert = (e) => {
     var newValue = { ...this.state.form };
-    newValue.id = this.state.dataJobs.length + 1;
-    var list = this.state.dataJobs;
+    newValue.id = this.state.dataForm.length + 1;
+    var list = this.state.dataForm;
     let error = {};
     var valid = true;
 
@@ -252,10 +251,10 @@ export class Form extends React.Component {
     if (valid === true) {
       window.confirm("El Registro se Guardo con Exito!!");
       list.push(newValue);
-      localStorage.setItem("datajob", JSON.stringify(this.state.dataJobs));
+      localStorage.setItem("dataform", JSON.stringify(this.state.dataForm));
       this.setState({
         modalInsert: false,
-        dataJobs: list,
+        dataForm: list,
         form: {
           id: "",
           name: "",
@@ -273,7 +272,7 @@ export class Form extends React.Component {
       form: { ...this.state.form, [e.target.name]: e.target.value },
     });
   };
-  handlecompanies = (e) => {
+  p = (e) => {
     e.preventDefault();
     this.setState({
       form: { ...this.state.form, [e.target.name]: JSON.parse(e.target.value) },
@@ -281,16 +280,19 @@ export class Form extends React.Component {
   };
 
   render() {
-    let deleteRepeated = companies(this.state.companies);
+    let deleteRepeated = jobs(this.state.jobs);
+
     return (
       <>
         <Container>
           <br />
+
           <thead>
-            <h1>Registro de Puestos Laborales</h1>
+            <h1>Registro de Postulantes</h1>
           </thead>
           <br />
           <Table>
+           
             <thead>
               <tr>
                 <th>ID</th>
@@ -301,7 +303,6 @@ export class Form extends React.Component {
                 <th>Pais</th>
                 <th>Acción</th>
 
-                {""}
                 <th>
                   <Button
                     color="btn btn-success btn-sm"
@@ -314,7 +315,7 @@ export class Form extends React.Component {
             </thead>
 
             <tbody>
-              {this.state.dataJobs.map((datum, idx) => (
+              {this.state.dataForm.map((datum, idx) => (
                 <tr key={datum.id}>
                   <td>{datum.id}</td>
                   <td>{datum.name}</td>
@@ -324,16 +325,17 @@ export class Form extends React.Component {
                   <td>{datum.country}</td>
 
                   <td>
-                    {" "}
                     <Button
                       color="btn btn-primary btn-sm"
                       onClick={() => this.openModalEdit(datum)}
+                      className="btn-marg"
                     >
                       Editar
-                    </Button>{" "}
+                    </Button>
                     <Button
                       color="btn btn-danger btn-sm"
                       onClick={() => this.remove(datum)}
+                      className="btn-marg"
                     >
                       Eliminar
                     </Button>
@@ -369,7 +371,6 @@ export class Form extends React.Component {
 
               <input
                 className="form-control"
-                
                 name="name"
                 id="name"
                 type="text"
@@ -382,6 +383,7 @@ export class Form extends React.Component {
               <label className="a">Función | Puesto</label>
               <input
                 className="form-control"
+                readOnly
                 name="workstation"
                 type="text"
                 onChange={this.handleChange}
@@ -459,7 +461,7 @@ export class Form extends React.Component {
                 className="form-control"
                 readOnly
                 type="text"
-                value={this.state.dataJobs.length+1}
+                value={this.state.dataForm.length+1}
               />
             </FormGroup> */}
             <FormGroup>
@@ -482,15 +484,26 @@ export class Form extends React.Component {
               <label className="a" htmlFor="workstation">
                 Función | Puesto
               </label>
-              <input
+              <select
                 className="form-control"
                 name="workstation"
                 required
                 id="workstation"
                 placeholder="Ingresar el puesto en el que se desempeña"
                 type="text"
-                onChange={this.handleChange}
-              ></input>
+                value={JSON.stringify(this.state.workstation)}
+                onChange={this.p}
+                aria-describedby="workstationHelp"
+              >
+                <option value={JSON.stringify({})} disabled selected hidden>
+                  Seleccione el Puesto
+                </option>
+                {deleteRepeated.map((workstation, index) => (
+                  <option Key={index} value={JSON.stringify(workstation)}>
+                    {workstation}
+                  </option>
+                ))}
+              </select>
             </FormGroup>
 
             <FormGroup>
@@ -505,13 +518,22 @@ export class Form extends React.Component {
                 placeholder="Ingresar el Nombre de la Empresa"
                 required
                 value={JSON.stringify(this.state.company)}
-                onChange={this.handlecompanies}
+                onChange={this.p}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
                   Seleccione la Empresa
                 </option>
-                {deleteRepeated.map((company, id) => (
-                  <option Key={id + 1} value={JSON.stringify(company)}>
+                {[
+                  ...new Set(
+                    this.state.jobs
+                      .filter(
+                        (elements) =>
+                          elements.workstation === this.state.form.workstation
+                      )
+                      .map((workstation) => workstation.company)
+                  ),
+                ].map((company, index) => (
+                  <option Key={index} value={JSON.stringify(company)}>
                     {company}
                   </option>
                 ))}
@@ -526,22 +548,25 @@ export class Form extends React.Component {
                 type="text"
                 required
                 value={JSON.stringify(this.state.city)}
-                onChange={this.handlecompanies}
+                onChange={this.p}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
                   Seleccione la Ciudad
                 </option>
-                
-                {this.state.companies
-                  .filter(
-                    (elements) =>
-                      elements.company=== this.state.form.company
-                  )
-                  .map(({ city, index }) => (
-                    <option Key={index} value={JSON.stringify(city)}>
-                      {city}
-                    </option>
-                  ))}
+                {[
+                  ...new Set(
+                    this.state.jobs
+                      .filter(
+                        (elements) =>
+                          elements.company === this.state.form.company
+                      )
+                      .map((workstation) => workstation.city)
+                  ),
+                ].map((city, index) => (
+                  <option Key={index} value={JSON.stringify(city)}>
+                    {city}
+                  </option>
+                ))}
               </select>
             </FormGroup>
             <FormGroup>
@@ -550,25 +575,27 @@ export class Form extends React.Component {
               <select
                 className="form-control"
                 name="country"
-                
                 required
                 value={JSON.stringify(this.state.country)}
-                onChange={this.handlecompanies}
+                onChange={this.p}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
                   Seleccione el Pais
                 </option>
 
-                {this.state.companies
-                  .filter(
-                    (elements) =>
-                      elements.city === this.state.form.city
-                  )
-                  .map(({ country, index }) => (
-                    <option Key={index} value={JSON.stringify(country)}>
-                      {country}
-                    </option>
-                  ))}
+                {[
+                  ...new Set(
+                    this.state.jobs
+                      .filter(
+                        (elements) => elements.city === this.state.form.city
+                      )
+                      .map((city) => city.country)
+                  ),
+                ].map((country, index) => (
+                  <option Key={index} value={JSON.stringify(country)}>
+                    {country}
+                  </option>
+                ))}
               </select>
             </FormGroup>
           </ModalBody>
