@@ -4,12 +4,10 @@ import Jobs from '../assests/ing/Jobs.png';
 import Countries from '../assests/ing/Countries.png';
 
 
- export const image =  {
-
-"img1": Home,
-"img2": Form,
-"img3": Jobs,
-"img4": Countries,
-
- }
+export const image = {
+    "img1": Home,
+    "img2": Form,
+    "img3": Jobs,
+    "img4": Countries,
+}
 
