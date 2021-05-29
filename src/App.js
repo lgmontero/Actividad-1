@@ -18,7 +18,7 @@ function App() {
 
           <div id="co0">
 
-            <Link to="/Form" className="link" ><li id="lis6"> <a id="lis6" > Home</a ></li></Link>
+            <Link to="/" className="link" ><li id="lis6"> <a id="lis6" > Home</a ></li></Link>
             <Link to="/Job" className="link" ><li id="lis0"> <a > Empleos</a ></li> </Link>
             <Link to="/Company" className="link" ><li id="lis1">   <a> Compañias</a ></li></Link>
             <Link to="/City" className="link" ><li id="lis2">   <a> Ciudad</a ></li></Link>
@@ -29,7 +29,7 @@ function App() {
 
         </div>
         <Switch>
-          <Route path="/Form" exact>
+          <Route path="/" exact>
             <div className="conteiner-home">
               <img src={image.img1} />
               <div className="page">
