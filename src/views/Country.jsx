@@ -12,20 +12,15 @@ import {
   FormGroup,
   ModalFooter,
 } from "reactstrap";
+import axios from "axios";
 
+const url = {
+  get: "https://api-fake-pilar-tecno.herokuapp.com/countries",
+  post: "https://api-fake-pilar-tecno.herokuapp.com/countries",
+  delete: "https://api-fake-pilar-tecno.herokuapp.com/countries/1",
+};
 const countries = [
-  {
-    id: 1,
-    country: "Argentina",
-  },
-  {
-    id: 2,
-    country: "Chile",
-  },
-  {
-    id: 3,
-    country: "Brasil",
-  },
+  
 ];
 
 export class Country extends React.Component {
@@ -37,18 +32,22 @@ export class Country extends React.Component {
       modalEdit: false,
       modalInsert: false,
       form: {
-        id: "",
-        country: "",
+        // id: "",
+        name: "",
       },
       error: {},
     };
   }
   componentDidMount() {
-    if (localStorage.getItem("datacountry") != null) {
-      this.setState({
-        dataCountry: JSON.parse(localStorage.getItem("datacountry")),
+    axios
+      .get(url.get)
+      .then((response) => {
+        console.log(response);
+        this.setState({ dataCountry: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
   }
 
   openModalEdit = (datum) => {
@@ -62,7 +61,7 @@ export class Country extends React.Component {
     this.setState({
       form: {
         id: "",
-        country: "",
+        name: "",
       },
       modalEdit: false,
     });
@@ -74,13 +73,12 @@ export class Country extends React.Component {
     });
   };
 
-
   closeModalInsert = () => {
     this.setState({
       modalInsert: false,
       form: {
         id: "",
-        country: "",
+        name: "",
       },
     });
   };
@@ -90,11 +88,9 @@ export class Country extends React.Component {
     let error = {};
     var counter = 0;
 
-    if (this.state.form.country.trim() === "") {
+    if (this.state.form.name.trim() === "") {
       valid = false;
-      error.conutry = window.confirm(
-        "Por Favor, ingresar un valor en campo Pais"
-      );
+      error.name = window.confirm("Por Favor, ingresar un valor en campo Pais");
       return;
     }
     this.setState({
@@ -103,16 +99,16 @@ export class Country extends React.Component {
     if (valid === true) {
       window.confirm("Se Modifico con Exito el Registro");
       var fix = this.state.dataCountry;
-      fix.forEach((registro) => {
-        if (datum.id === registro.id) {
-          fix[counter].country = datum.country;
+      fix.forEach((register) => {
+        if (datum.id === register.id) {
+          fix[counter].name = datum.name;
         }
         counter++;
       });
       this.setState({
         dataCountry: fix,
         modalEdit: false,
-        form: { id: "", country: "" },
+        form: { id: "", name: "" },
       });
       localStorage.setItem(
         "datacountry",
@@ -135,21 +131,17 @@ export class Country extends React.Component {
         counter++;
       });
       this.setState({ dataCountry: fix, modalEdit: false });
-      localStorage.setItem(
-        "datacountry",
-        JSON.stringify(this.state.dataCountry)
-      );
     }
   };
 
   insert = (e) => {
-    var newValue = { ...this.state.form };
-    newValue.id = this.state.dataCountry.length + 1;
+    // var newValue = { ...this.state.form };
+    // newValue.id = this.state.dataCountry.length+1;
     var list = this.state.dataCountry;
     let error = {};
     var valid = true;
 
-    if (this.state.form.country.trim() === "") {
+    if (this.state.form.name.trim() === "") {
       valid = false;
       error.country = window.confirm(
         "Por Favor, ingresar un valor en campo Pais"
@@ -163,18 +155,23 @@ export class Country extends React.Component {
 
     if (valid === true) {
       window.confirm("El registro se Guardo con Exito!!");
-      list.push(newValue);
-      localStorage.setItem(
-        "datacountry",
-        JSON.stringify(this.state.dataCountry)
-      );
-
+      // list.push(newValue);
+      axios
+      .post(url.post, this.state.form)
+      .then((response) => {
+        console.log(response);
+        list.push(response.data);
+        this.setState({ dataCountry: list });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
       this.setState({
         modalInsert: false,
         dataCountry: list,
         form: {
           id: "",
-          country: "",
+          name: "",
         },
       });
     }
@@ -216,10 +213,9 @@ export class Country extends React.Component {
               {this.state.dataCountry.map((datum) => (
                 <tr key={datum.id}>
                   <td>{datum.id}</td>
-                  <td>{datum.country}</td>
+                  <td>{datum.name}</td>
 
                   <td>
-                    
                     <Button
                       color="btn btn-primary btn-sm"
                       onClick={() => this.openModalEdit(datum)}
@@ -266,10 +262,10 @@ export class Country extends React.Component {
               <label className="a">Pais:</label>
               <input
                 className="form-control"
-                name="country"
+                name="name"
                 type="text"
                 onChange={this.handleChange}
-                value={this.state.form.country}
+                value={this.state.form.name}
               />
             </FormGroup>
           </ModalBody>
@@ -315,7 +311,7 @@ export class Country extends React.Component {
               <label className="a">Pais:</label>
               <input
                 className="form-control"
-                name="country"
+                name="name"
                 type="text"
                 placeholder="Ingresar el Nombre del Pais"
                 required

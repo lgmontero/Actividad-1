@@ -65,6 +65,7 @@ export class Company extends React.Component {
       });
     }
   }
+  
 
   openModalEdit = (datum) => {
     this.setState({
