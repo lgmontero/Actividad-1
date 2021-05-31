@@ -2,13 +2,24 @@ export const cities = (event)=>{
     console.log(event);
     let listCities=[];
     // console.log(listCities);
-    event.map(({ city}) => (
-      listCities.includes(city) ? null : listCities.push(city)
+    event.map(( city) => (
+      listCities.includes(city.name) ? null : listCities.push(city)
     ))
 
     // console.log(listCities);
     return listCities;
 }
+
+
+
+
+
+
+
+
+
+
+
 export const countries = (event)=>{
     // console.log(event);
     let listCountries=[];

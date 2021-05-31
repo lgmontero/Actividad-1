@@ -1,7 +1,6 @@
 import React from "react";
 import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import {
   Table,
   Button,
@@ -17,11 +16,10 @@ import axios from "axios";
 const url = {
   get: "https://api-fake-pilar-tecno.herokuapp.com/countries",
   post: "https://api-fake-pilar-tecno.herokuapp.com/countries",
-  delete: "https://api-fake-pilar-tecno.herokuapp.com/countries/1",
+  delete: (id) => `https://api-fake-pilar-tecno.herokuapp.com/countries/${id}`,
+  edit: (id)=>`https://api-fake-pilar-tecno.herokuapp.com/countries/${id}`,
 };
-const countries = [
-  
-];
+const countries = [];
 
 export class Country extends React.Component {
   constructor(props) {
@@ -32,8 +30,7 @@ export class Country extends React.Component {
       modalEdit: false,
       modalInsert: false,
       form: {
-        // id: "",
-        name: "",
+       name: "",
       },
       error: {},
     };
@@ -86,8 +83,6 @@ export class Country extends React.Component {
   edit = (datum) => {
     var valid = true;
     let error = {};
-    var counter = 0;
-
     if (this.state.form.name.trim() === "") {
       valid = false;
       error.name = window.confirm("Por Favor, ingresar un valor en campo Pais");
@@ -98,45 +93,45 @@ export class Country extends React.Component {
     });
     if (valid === true) {
       window.confirm("Se Modifico con Exito el Registro");
-      var fix = this.state.dataCountry;
-      fix.forEach((register) => {
-        if (datum.id === register.id) {
-          fix[counter].name = datum.name;
-        }
-        counter++;
-      });
-      this.setState({
-        dataCountry: fix,
-        modalEdit: false,
-        form: { id: "", name: "" },
-      });
-      localStorage.setItem(
-        "datacountry",
-        JSON.stringify(this.state.dataCountry)
-      );
+      axios
+        .patch(url.edit(datum.id),{name:this.state.form.name})
+        .then((response) => {
+          let auxState = this.state.dataCountry;
+          let currIndex = this.state.dataCountry.findIndex((country) => country.id === datum.id);
+          auxState[currIndex]=response.data
+          this.setState({ dataCountry: auxState, modalEdit: false, form: { id: "", name: "",}, });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
+      
+     
+   
 
   remove = (datum) => {
     var option = window.confirm(
       "Estás Seguro que deseas Eliminar este Registro "
     );
     if (option === true) {
-      var counter = 0;
-      var fix = this.state.dataCountry;
-      fix.forEach((register) => {
-        if (datum.id === register.id) {
-          fix.splice(counter, 1);
-        }
-        counter++;
-      });
-      this.setState({ dataCountry: fix, modalEdit: false });
+      axios
+        .delete(url.delete(datum.id))
+        .then((response) => {
+          let newfix = this.state.dataCountry.filter(
+            (country) => country.id !== datum.id
+          );
+          console.log(response);
+
+          this.setState({ dataCountry: newfix, modalEdit: false });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
   insert = (e) => {
-    // var newValue = { ...this.state.form };
-    // newValue.id = this.state.dataCountry.length+1;
     var list = this.state.dataCountry;
     let error = {};
     var valid = true;
@@ -157,15 +152,15 @@ export class Country extends React.Component {
       window.confirm("El registro se Guardo con Exito!!");
       // list.push(newValue);
       axios
-      .post(url.post, this.state.form)
-      .then((response) => {
-        console.log(response);
-        list.push(response.data);
-        this.setState({ dataCountry: list });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .post(url.post, this.state.form)
+        .then((response) => {
+          console.log(response);
+          list.push(response.data);
+          this.setState({ dataCountry: list });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       this.setState({
         modalInsert: false,
         dataCountry: list,

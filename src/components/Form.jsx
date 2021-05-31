@@ -293,7 +293,8 @@ export class Form extends React.Component {
           <br />
           <Table>
            
-            <thead>
+            {/* <thead> */}
+
               <tr>
                 <th>ID</th>
                 <th>Nombres y Apellidos</th>
@@ -312,7 +313,7 @@ export class Form extends React.Component {
                   </Button>
                 </th>
               </tr>
-            </thead>
+            {/* </thead> */}
 
             <tbody>
               {this.state.dataForm.map((datum, idx) => (
@@ -499,7 +500,7 @@ export class Form extends React.Component {
                   Seleccione el Puesto
                 </option>
                 {deleteRepeated.map((workstation, index) => (
-                  <option Key={index} value={JSON.stringify(workstation)}>
+                  <option key={index} value={JSON.stringify(workstation)}>
                     {workstation}
                   </option>
                 ))}
@@ -533,7 +534,7 @@ export class Form extends React.Component {
                       .map((workstation) => workstation.company)
                   ),
                 ].map((company, index) => (
-                  <option Key={index} value={JSON.stringify(company)}>
+                  <option key={index} value={JSON.stringify(company)}>
                     {company}
                   </option>
                 ))}
@@ -558,12 +559,13 @@ export class Form extends React.Component {
                     this.state.jobs
                       .filter(
                         (elements) =>
-                          elements.company === this.state.form.company
+                          elements.company === this.state.form.company &&
+                          elements.workstation === this.state.form.workstation
                       )
                       .map((workstation) => workstation.city)
                   ),
                 ].map((city, index) => (
-                  <option Key={index} value={JSON.stringify(city)}>
+                  <option key={index} value={JSON.stringify(city)}>
                     {city}
                   </option>
                 ))}
@@ -587,12 +589,17 @@ export class Form extends React.Component {
                   ...new Set(
                     this.state.jobs
                       .filter(
-                        (elements) => elements.city === this.state.form.city
+                        (elements) => elements.city === this.state.form.city &&
+
+                        elements.company === this.state.form.company &&
+                        
+                        elements.workstation === this.state.form.workstation
+                        
                       )
                       .map((city) => city.country)
                   ),
                 ].map((country, index) => (
-                  <option Key={index} value={JSON.stringify(country)}>
+                  <option key={index} value={JSON.stringify(country)}>
                     {country}
                   </option>
                 ))}

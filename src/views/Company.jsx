@@ -12,26 +12,18 @@ import {
   FormGroup,
   ModalFooter,
 } from "reactstrap";
+import axios from "axios";
+
+const url = {
+  get: "http://api-fake-pilar-tecno.herokuapp.com/organizations?_expand=place",
+  getcities: "https://api-fake-pilar-tecno.herokuapp.com/places?_expand=countrie",
+  post: "https://api-fake-pilar-tecno.herokuapp.com/organizations",
+  delete: (id) => `https://api-fake-pilar-tecno.herokuapp.com/organizations/${id}`,
+  edit: (id)=>`https://api-fake-pilar-tecno.herokuapp.com/organizations/${id}`,
+};
 
 const companies = [
-  {
-    id: 1,
-    company: "Develop SA",
-    city: "La Rioja",
-    country: "Argentina",
-  },
-  {
-    id: 2,
-    company: "Chilevisión",
-    city: "Santiago",
-    country: "Chile",
-  },
-  {
-    id: 3,
-    company: "Petrobras",
-    city: "Natal",
-    country: "Brasil",
-  },
+  
 ];
 
 export class Company extends React.Component {
@@ -43,10 +35,10 @@ export class Company extends React.Component {
       modalEdit: false,
       modalInsert: false,
       form: {
-        id: "",
-        company: "",
-        city: "",
-        country: "",
+       placeId: "",
+        name: "",
+        countrieId:"",
+        place:{name:"",countrieId: "",}
       },
       error: {},
       cities: [],
@@ -54,16 +46,24 @@ export class Company extends React.Component {
   }
 
   componentDidMount() {
-    if (localStorage.getItem("datacity") != null) {
-      this.setState({
-        cities: JSON.parse(localStorage.getItem("datacity")),
+    axios
+      .get(url.get)
+      .then((response) => {
+        console.log(response);
+        this.setState({ dataCompany: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
-    if (localStorage.getItem("datacompany") != null) {
-      this.setState({
-        dataCompany: JSON.parse(localStorage.getItem("datacompany")),
+      axios
+      .get(url.getcities)
+      .then((response) => {
+        console.log(response);
+        this.setState({ cities: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
   }
   
 
@@ -78,10 +78,10 @@ export class Company extends React.Component {
     this.setState({
       modalEdit: false,
       form: {
-        id: "",
-        company: "",
-        city: "",
-        country: "",
+        placeId: "",
+        name: "",
+        countrieId:"",
+        place:{name:"",countrieId: "",}
       },
       
     });
@@ -97,10 +97,9 @@ export class Company extends React.Component {
     this.setState({
       modalInsert: false,
       form: {
-        id: "",
-        company: "",
-        city: "",
-        country: "",
+        placeId: "",
+        name: "",
+        countrieId:"",
       },
     });
   };
@@ -108,49 +107,28 @@ export class Company extends React.Component {
   edit = (datum) => {
     var valid = true;
     let error = {};
-    var counter = 0;
-
-    if (this.state.form.company.trim() === "") {
+    if (this.state.form.name.trim() === "") {
       valid = false;
-      error.company = window.confirm(
-        "Por Favor, Ingresar un valor en campo Empresa"
-      );
+      error.company = window.confirm("Por Favor, Ingresar un valor en campo Empresa");
       return;
     }
-    if (this.state.form.city.trim() === "") {
-      valid = false;
-      error.city = window.confirm(
-        "Por Favor, ingresar un valor en campo Ciudad"
-      );
-      return;
-    }
-    if (this.state.form.country.trim() === "") {
-      valid = false;
-      error.conutry = window.confirm(
-        "Por Favor, ingresar un valor en campo Pais"
-      );
-      return;
-    }
-    this.setState({
-      error: error,
-    });
+    this.setState({ error: error,});
     if (valid === true) {
       window.confirm("Se Modifico con Exito el Registro");
-      var fix = this.state.dataCompany;
-      fix.forEach((register) => {
-        if (datum.id === register.id) {
-          fix[counter].company = datum.company;
-          fix[counter].city = datum.city;
-          fix[counter].country = datum.country;
-        }
-        counter++;
+      axios
+      .patch(url.edit(datum.id),{name:this.state.form.name})
+      .then((response) => {
+        let auxState = this.state.dataCompany;
+        let currIndex = this.state.dataCompany.findIndex((company) => company.id === datum.id);
+        
+        auxState[currIndex].name=response.data.name
+        this.setState({ dataCompany: auxState, modalEdit: false, form: { placeId: "", name: "", countrieId:"",   place:{name:"",countrieId: "",} },});
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      this.setState({
-        dataCompany: fix,
-        modalEdit: false,
-        form: { id: "", company: "", city: "", country: "" },
-      });
-      localStorage.setItem("datacompany", JSON.stringify(this.state.dataCompany));
+
+
     }
   };
 
@@ -159,16 +137,19 @@ export class Company extends React.Component {
       "Estás Seguro que deseas Eliminar este Registro "
     );
     if (option === true) {
-      var counter = 0;
-      var fix = this.state.dataCompany;
-      fix.forEach((register) => {
-        if (datum.id === register.id) {
-          fix.splice(counter, 1);
-        }
-        counter++;
-      });
-      this.setState({ dataCompany: fix, modalEdit: false });
-      localStorage.setItem("datacompany", JSON.stringify(this.state.dataCompany));
+      axios
+        .delete(url.delete(datum.id))
+        .then((response) => {
+          let newfix = this.state.data.filter(
+            (city) => city.id !== datum.id
+          );
+          console.log(response);
+
+          this.setState({ data: newfix, modalEdit: false });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -215,10 +196,9 @@ export class Company extends React.Component {
         modalInsert: false,
         dataCompany: list,
         form: {
-          id: "",
-          company: "",
-          city: "",
-          country: "",
+          placeId: "",
+          name: "",
+          countrieId:"",
         },
       });
     }
@@ -232,8 +212,11 @@ export class Company extends React.Component {
 
   handleOptions = (e) => {
     e.preventDefault();
+     let cityData = JSON.parse(e.target.value)
+  
+
     this.setState({
-      form: { ...this.state.form, [e.target.name]: JSON.parse(e.target.value) },
+      form: { ...this.state.form, placeId: cityData.name, countrieId: cityData.countrie.name },
     });
   };
 
@@ -273,9 +256,9 @@ export class Company extends React.Component {
               {this.state.dataCompany.map((datum) => (
                 <tr key={datum.id}>
                   <td>{datum.id}</td>
-                  <td>{datum.company}</td>
-                  <td>{datum.city}</td>
-                  <td>{datum.country}</td>
+                  <td>{datum.name}</td>
+                  <td>{typeof datum.place !== "undefined" ? datum.place.name : "Sin Datos"}</td>
+                  <td>{typeof datum.place !== "undefined" ? datum.place.countrieId: "Sin Datos"}</td>
 
                   <td>
                     
@@ -325,10 +308,10 @@ export class Company extends React.Component {
               <label className="a">Empresa</label>
               <input
                 className="form-control"
-                name="company"
+                name="name"
                 type="text"
                 onChange={this.handleChange}
-                value={this.state.form.company}
+                value={this.state.form.name}
               />
             </FormGroup>
 
@@ -337,10 +320,10 @@ export class Company extends React.Component {
               <input
                 className="form-control"
                 readOnly
-                name="city"
+                name="name"
                 type="text"
-                onChange={this.handleChange}
-                value={this.state.form.city}
+                // onChange={this.handleChange}
+                value={this.state.form.place.name}
               />
             </FormGroup>
 
@@ -349,10 +332,10 @@ export class Company extends React.Component {
               <input
                 className="form-control"
                 readOnly
-                name="country"
+                name="countrieId"
                 type="text"
-                onChange={this.handleChange}
-                value={this.state.form.country}
+                // onChange={this.handleChange}
+                value={this.state.form.place.countrieId}
               />
             </FormGroup>
           </ModalBody>
@@ -398,7 +381,7 @@ export class Company extends React.Component {
               <label className="a">Empresa</label>
               <input
                 className="form-control"
-                name="company"
+                name="name"
                 type="text"
                 placeholder="Ingresar el Nombre de la Empresa"
                 required
@@ -409,18 +392,18 @@ export class Company extends React.Component {
               <label className="a">Ciudad</label>
               <select
                 className="form-control"
-                name="city"
+                name="placeId"
                 type="text"
                 required
-                value={JSON.stringify(this.state.city)}
+                value={JSON.stringify(this.state.placeId)}
                 onChange={this.handleOptions}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
-                  Seleccione la Ciudad
+                  Seleccione la Ciudad y el Pais
                 </option>
                 {deleteRepeated.map((city, id) => (
-                  <option Key={id + 1} value={JSON.stringify(city)}>
-                    {city}
+                  <option key={id } value={JSON.stringify(city)}>
+                    {city.name} - {city.countrie.name}
                   </option>
                 ))}
               </select>
@@ -430,10 +413,9 @@ export class Company extends React.Component {
 
               <select
                 className="form-control"
-                name="country"
-                
+                name="countrieId"
                 required
-                value={JSON.stringify(this.state.country)}
+                value={JSON.stringify(this.state.countrieId)}
                 onChange={this.handleOptions}
               >
                 <option value={JSON.stringify({})} disabled selected hidden>
@@ -443,11 +425,11 @@ export class Company extends React.Component {
                 {this.state.cities
                   .filter(
                     (element) =>
-                      element.city === this.state.form.city
+                      element.countrie.name === this.state.form.name
                   )
-                  .map(({ country, index }) => (
-                    <option Key={index} value={JSON.stringify(country)}>
-                      {country}
+                  .map(({ countrie, index }) => (
+                    <option key={index} value={JSON.stringify(countrie.id)}>
+                      {countrie.name}
                     </option>
                   ))}
               </select>

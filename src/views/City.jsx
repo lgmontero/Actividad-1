@@ -11,24 +11,16 @@ import {
   FormGroup,
   ModalFooter,
 } from "reactstrap";
+import axios from "axios";
 
-const cities = [
-  {
-    id: 1,
-    city: "La Rioja",
-    country: "Argentina",
-  },
-  {
-    id: 2,
-    city: "Santiago",
-    country: "Chile",
-  },
-  {
-    id: 3,
-    city: "Natal",
-    country: "Brasil",
-  },
-];
+const url = {
+  get: "https://api-fake-pilar-tecno.herokuapp.com/places?_expand=countrie",
+  getcountries: "https://api-fake-pilar-tecno.herokuapp.com/countries",
+  post: "https://api-fake-pilar-tecno.herokuapp.com/places",
+  delete: (id) => `https://api-fake-pilar-tecno.herokuapp.com/places/${id}`,
+  edit: (id)=>`https://api-fake-pilar-tecno.herokuapp.com/places/${id}`,
+};
+const cities = [];
 
 export class City extends React.Component {
   constructor(props) {
@@ -39,27 +31,34 @@ export class City extends React.Component {
       modalEdit: false,
       modalInsert: false,
       form: {
-        id: "",
-        city: "",
-        country: "",
+        name: "",
+        countrieId: "",
+        
       },
       error: {},
       countries: [],
     };
   }
   componentDidMount() {
-    if (localStorage.getItem("datacountry") != null) {
-      this.setState({
-        countries: JSON.parse(localStorage.getItem("datacountry")),
+    axios
+      .get(url.get)
+      .then((response) => {
+        console.log(response);
+        this.setState({ dataCity: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
-    if (localStorage.getItem("datacity") != null) {
-      this.setState({
-        dataCity: JSON.parse(localStorage.getItem("datacity")),
+      axios
+      .get(url.getcountries)
+      .then((response) => {
+        console.log(response);
+        this.setState({ countries: response.data });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
   }
-
   openModalEdit = (datum) => {
     this.setState({
       form: datum,
@@ -71,9 +70,8 @@ export class City extends React.Component {
     this.setState({
       modalEdit: false,
       form: {
-        id: "",
-        city: "",
-        country: "",
+       countrieId: "",
+        name: "",
       },
      
     });
@@ -89,9 +87,8 @@ export class City extends React.Component {
     this.setState({
       modalInsert: false,
       form: {
-        id: "",
-        city: "",
-        country: "",
+        countrieId: "",
+        name: "",
       },
     });
   };
@@ -99,16 +96,16 @@ export class City extends React.Component {
   edit = (datum) => {
     var valid = true;
     let error = {};
-    var counter = 0;
+   
 
-    if (this.state.form.city.trim() === "") {
+    if (this.state.form.countrieId === null || this.state.form.countrieId === undefined) {
       valid = false;
-      error.city = window.confirm(
+      error.countrieId = window.confirm(
         "Por Favor, ingresar un valor en campo Ciudad"
       );
       return;
     }
-    if (this.state.form.country.trim() === "") {
+    if (this.state.form.name.trim() === "") {
       valid = false;
       error.conutry = window.confirm(
         "Por Favor, ingresar un valor en campo Pais"
@@ -120,20 +117,27 @@ export class City extends React.Component {
     });
     if (valid === true) {
       window.confirm("Se Modifico con Exito el Registro");
-      var fix = this.state.dataCity;
-      fix.forEach((register) => {
-        if (datum.id === register.id) {
-          fix[counter].city = datum.city;
-          fix[counter].country = datum.country;
+      axios
+      .patch(url.edit(datum.id),{name:this.state.form.name})
+      .then((response) => {
+        let auxState = this.state.dataCity;
+        let currIndex = this.state.dataCity.findIndex((city) => city.id === datum.id);
+        let country = this.state.countries.find((city)=>{
+         return city.id === this.state.form.countrieId
+        })
+        let city = {
+          name: response.data.name,
+          countrieId: this.state.form.countrieId,
+          id: response.data.id,
+          countrie: country
+
         }
-        counter++;
+        auxState[currIndex]=city
+        this.setState({ dataCity: auxState, modalEdit: false, form: {  name: "", countrieId:"",}, });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      this.setState({
-        dataCity: fix,
-        modalEdit: false,
-        form: { id: "", city: "", country: "" },
-      });
-      localStorage.setItem("datacity", JSON.stringify(this.state.dataCity));
     }
   };
 
@@ -142,37 +146,38 @@ export class City extends React.Component {
       "Estás Seguro que deseas Eliminar este Registro "
     );
     if (option === true) {
-      var counter = 0;
-      var fix = this.state.dataCity;
-      fix.forEach((register) => {
-        if (datum.id === register.id) {
-          fix.splice(counter, 1);
-        }
-        counter++;
-      });
-      this.setState({ dataCity: fix, modalActualizar: false });
-      localStorage.setItem("datacity", JSON.stringify(this.state.dataCity));
+      axios
+        .delete(url.delete(datum.id))
+        .then((response) => {
+          let newfix = this.state.dataCity.filter(
+            (city) => city.id !== datum.id
+          );
+          console.log(response);
+
+          this.setState({ dataCity: newfix, modalEdit: false });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
   insert = (e) => {
-    var newValue = { ...this.state.form };
-    newValue.id = this.state.dataCity.length + 1;
     var list = this.state.dataCity;
     let error = {};
     var valid = true;
 
-    if (this.state.form.city.trim() === "") {
+    if (this.state.form.countrieId === null || this.state.form.countrieId === undefined ) {
       valid = false;
-      error.city = window.confirm(
+      error.countrieId = window.confirm(
         "Por Favor, ingresar un valor en campo Ciudad"
       );
 
       return;
     }
-    if (this.state.form.country.trim() === "") {
+    if (this.state.form.name.trim() === "") {
       valid = false;
-      error.country = window.confirm(
+      error.name = window.confirm(
         "Por Favor, ingresar un valor en campo Pais"
       );
 
@@ -184,30 +189,50 @@ export class City extends React.Component {
 
     if (valid === true) {
       window.confirm("El Reistro se Guardo con Exito!!");
-      list.push(newValue);
-      localStorage.setItem("datacity", JSON.stringify(this.state.dataCity));
-      this.setState({
-        modalInsert: false,
-        dataCity: list,
-        form: {
-          id: "",
-          city: "",
-          country: "",
-        },
-      });
+      axios
+        .post(url.post, this.state.form)
+        .then((response) => {
+          console.log(response);
+          let country = this.state.countries.find((city)=>{
+            return city.id === this.state.form.countrieId
+          })
+          let city = {
+            name: this.state.form.name,
+            countrieId: this.state.form.countrieId,
+            id: response.data.id,
+            countrie: country
+
+          }
+          list.push(city);
+         
+          this.setState({ dataCity: list });
+          this.setState({
+            modalInsert: false,
+            dataCity: list,
+            form: {
+              countrieId: "",
+              name: "",
+            },
+          });
+
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+     
     }
   };
 
   handleChange = (e) => {
     this.setState({
-      form: { ...this.state.form, [e.target.name]: e.target.value },
+      form: { ...this.state.form, [e.target.name]: e.target.value},
     });
   };
 
   handleOptions = (e) => {
     e.preventDefault();
-    this.setState({
-      form: { ...this.state.form, [e.target.name]: JSON.parse(e.target.value) },
+        this.setState({
+      form: { ...this.state.form, [e.target.name]: JSON.parse(e.target.value)}
     });
   };
 
@@ -242,8 +267,8 @@ export class City extends React.Component {
               {this.state.dataCity.map((datum) => (
                 <tr key={datum.id}>
                   <td>{datum.id}</td>
-                  <td>{datum.city}</td>
-                  <td>{datum.country}</td>
+                  <td>{datum.name}</td>
+                  <td>{datum.countrie.name}</td>
 
                   <td>
                     
@@ -293,10 +318,10 @@ export class City extends React.Component {
               <label class="a">Ciudad:</label>
               <input
                 className="form-control"
-                name="city"
+                name="name"
                 type="text"
                 onChange={this.handleChange}
-                value={this.state.form.city}
+                value={this.state.form.name}
               />
             </FormGroup>
 
@@ -304,11 +329,11 @@ export class City extends React.Component {
               <label class="a">Pais:</label>
               <input
                 className="form-control"
-                name="country"
+                name="countrieId"
                 readOnly
                 type="text"
                 onChange={this.handleChange}
-                value={this.state.form.country}
+                value={this.state.form.countrieId}
               />
             </FormGroup>
           </ModalBody>
@@ -354,7 +379,7 @@ export class City extends React.Component {
               <label class="a">Ciudad:</label>
               <input
                 className="form-control"
-                name="city"
+                name="name"
                 type="text"
                 placeholder="Ingresar el Nombre de la Ciudad"
                 required
@@ -366,19 +391,19 @@ export class City extends React.Component {
 
               <select
                 className="form-control"
-                name="country"
+                name="countrieId"
                 placeholder="Ingresar el Nombre del Pais"
                 required
-                value={JSON.stringify(this.state.country)}
+                value={JSON.stringify(this.state.countrieId)}
                 onChange={this.handleOptions}
               >
-                <option disabled selected hidden>
+                <option value={JSON.stringify({})}  disabled selected hidden>
                 Seleccione el Pais
                 </option>
 
-                {this.state.countries.map(({ country, id }) => (
-                  <option Key={id + 1} value={JSON.stringify(country)}>
-                    {country}
+                {this.state.countries.map(({ name, id }) => (
+                  <option key={id} value={JSON.stringify(id)}>
+                    {name}
                   </option>
                 ))}
               </select>
